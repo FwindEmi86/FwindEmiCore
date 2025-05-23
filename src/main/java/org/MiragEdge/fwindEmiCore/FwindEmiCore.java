@@ -7,7 +7,7 @@ public class FwindEmiCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // 注册模块
+        // 初始化胡萝卜镐模块
         new CarrotPickAxe(this).register();
         getLogger().info("插件已启用！");
     }
