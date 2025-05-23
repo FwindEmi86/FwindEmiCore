@@ -6,12 +6,11 @@ public final class FwindEmiCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-
+        getLogger().info("FwindEmiCore 插件已加载！");
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        getLogger().info("FwindEmiCore 插件已卸载！");
     }
 }
