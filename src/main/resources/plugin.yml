@@ -1,0 +1,8 @@
+name: FwindEmiCore
+version: '1.0-SNAPSHOT'
+main: org.MiragEdge.fwindEmiCore.FwindEmiCore
+api-version: '1.21'
+prefix: 52051
+authors: [ FwindEmi ]
+description: FwindEmi-Core
+website: miragedge.top
