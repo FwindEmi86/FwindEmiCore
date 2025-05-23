@@ -1,0 +1,8 @@
+messages:
+  no-permission: '&cNot enough permission for this command'
+  help: |
+    &a/limbohelp - Show this message.
+    &a/limboconn (limbo-name) - Get connection count on limbo. Permission - limbo.connection
+    &a/limbomem - Get TOTAL memory used by BungeeCord and plugins. Permission - limbo.memory
+    &a/limbostop (limbo-name) - Stop specific limbo server. Permission limbo.stop
+    &a/limbostart (limbo-name) - Start specific limbo server. Permission limbo.start
