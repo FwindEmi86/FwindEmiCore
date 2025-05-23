@@ -6,7 +6,7 @@
 
     <groupId>top.MiragEdge</groupId>
     <artifactId>FwindEmiCore</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <name>FwindEmiCore</name>
@@ -51,6 +51,12 @@
     </build>
 
     <repositories>
+        <!-- 添加 ItemsAdder 官方仓库 -->
+        <repository>
+        <id>matteodev</id>
+        <url>https://maven.devs.beer/</url>
+        </repository>
+        <!-- 其他必须 -->
         <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
@@ -60,18 +66,18 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
     </repositories>
-
     <dependencies>
+        <dependency>
+            <groupId>dev.lone</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>4.0.10</version> <!-- 需与服务端插件版本一致 -->
+            <scope>provided</scope>
+        </dependency>
+        <!-- Paper API 依赖 -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
             <version>1.21.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.lone</groupId>
-            <artifactId>ItemsAdder</artifactId>
-            <version>3.6.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
