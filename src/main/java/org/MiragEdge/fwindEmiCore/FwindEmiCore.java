@@ -1,5 +1,6 @@
 package org.MiragEdge.fwindEmiCore;
 
+import org.MiragEdge.fwindEmiCore.command.MainCommand;
 import org.MiragEdge.fwindEmiCore.items.CarrotPickAxe;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,16 +12,20 @@ public class FwindEmiCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // 注册命令（关键修改点）
+        MainCommand mainCommand = new MainCommand(this);
+        getCommand("fwindemicore").setExecutor(mainCommand);
+        getCommand("fwindemicore").setTabCompleter(mainCommand);
         // 首次初始化
         initializePlugin();
-        getLogger().info("[核心] 插件已启用！");
+        getLogger().info("\\u001B[32m[核心] 插件已启用！\\u001B[0m");
     }
 
     @Override
     public void onDisable() {
         // 关闭插件
         shutdownPlugin();
-        getLogger().info("[核心] 插件已关闭！");
+        getLogger().info("\\u001B[32m[核心] 插件已关闭！\\u001B[0m");
     }
 
     // 首次初始化
@@ -41,31 +46,9 @@ public class FwindEmiCore extends JavaPlugin {
     }
 
     // 重载插件
-    private void reloadPlugin() {
+    public void reloadPlugin() {
         shutdownPlugin(); // 清理旧模块
         initializePlugin(); // 重新初始化
-        getLogger().info("[核心] 配置重载完成！");
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("fwindemicore") || cmd.getName().equalsIgnoreCase("fec")) {
-            if (args.length == 0) {
-                sender.sendMessage("§l§eFwindEmi-Core §f版本: §a" + getPluginMeta().getVersion());
-                sender.sendMessage("§f使用 §b/fec reload §f重载配置");
-                return true;
-            }
-
-            if (args[0].equalsIgnoreCase("reload")) {
-                if (!sender.hasPermission("fwindemicore.reload")) {
-                    sender.sendMessage("§c你没有权限执行此操作！");
-                    return true;
-                }
-                reloadPlugin();
-                sender.sendMessage("§a[核心] 配置重载完成！");
-                return true;
-            }
-        }
-        return false;
+        getLogger().info("\\u001B[32m[核心] 配置重载完成！\\u001B[0m");
     }
 }

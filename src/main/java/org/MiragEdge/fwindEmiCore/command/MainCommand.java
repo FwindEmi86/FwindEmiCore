@@ -1,95 +1,80 @@
 package org.MiragEdge.fwindEmiCore.command;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import org.bukkit.command.CommandSourceStack;
-import org.bukkit.permissions.Permission;
+import org.MiragEdge.fwindEmiCore.FwindEmiCore;
+import org.MiragEdge.fwindEmiCore.items.CarrotPickAxe;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.concurrent.CompletableFuture;
+public class MainCommand implements CommandExecutor, TabCompleter {
+    private final FwindEmiCore plugin; // 插件实例引用
 
-public class MainCommand {
-    private final String mainCommandName = "fwindemicore";
-    private final String alias = "fec";
-    private final Permission usePermission = new Permission("fwindemicore.use");
-    private final Permission infoPermission = new Permission("fwindemicore.info");
-    private final Permission reloadPermission = new Permission("fwindemicore.reload");
-
-    /**
-     * 注册主命令及子命令
-     * @param dispatcher 命令调度器
-     */
-    public void register(@NotNull CommandDispatcher<CommandSourceStack> dispatcher) {
-        // 构建主命令节点
-        LiteralArgumentBuilder<CommandSourceStack> mainCommand = Commands.literal(mainCommandName)
-                .aliases(alias) // 别名
-                .requires(source -> source.hasPermission(usePermission.getName())) // 权限校验
-                .description("核心管理命令") // 命令描述
-                .then(buildInfoSubcommand()) // 子命令：info
-                .then(buildReloadSubcommand()); // 子命令：reload
-
-        // 注册主命令节点
-        LiteralCommandNode<CommandSourceStack> mainNode = dispatcher.register(mainCommand.build());
-
-        // 为根命令添加Tab补全（可选，显示子命令列表）
-        dispatcher.register(Commands.literal("").redirect(mainNode));
+    // 构造方法注入插件实例
+    public MainCommand(FwindEmiCore plugin) {
+        this.plugin = plugin;
     }
 
-    /**
-     * 构建 info 子命令
-     */
-    private LiteralArgumentBuilder<CommandSourceStack> buildInfoSubcommand() {
-        return Commands.literal("info")
-                .requires(source -> source.hasPermission(infoPermission.getName()))
-                .description("查看核心信息")
-                .executes(context -> {
-                    context.getSource().sendMessage("FwinderCore v1.0 - 核心信息：模块化命令已加载");
-                    return 1;
-                })
-                // Tab补全：无参数时不提供建议（可选）
-                .suggests((context, builder) ->
-                        CompletableFuture.completedFuture(builder.build())
-                );
+    // 命令执行逻辑
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        // 主命令匹配（支持别名）
+        if (!command.getName().equalsIgnoreCase("fwindemicore") && !command.getName().equalsIgnoreCase("fec")) {
+            return false;
+        }
+
+        // 无参数时显示基础信息
+        if (args.length == 0) {
+            sender.sendMessage("§l§eFwindEmi-Core §f版本: §a" + plugin.getDescription().getVersion());
+            sender.sendMessage("§f使用 §b/fec reload §f重载配置");
+            return true;
+        }
+
+        // 子命令分发
+        switch (args[0].toLowerCase()) {
+            case "info":
+                handleInfoCommand(sender, args);
+                break;
+            case "reload":
+                handleReloadCommand(sender, args);
+                break;
+            default:
+                sender.sendMessage("§c未知子命令! 可用: info, reload");
+                break;
+        }
+        return true;
     }
 
-    /**
-     * 构建 reload 子命令（含自定义Tab补全示例）
-     */
-    private LiteralArgumentBuilder<CommandSourceStack> buildReloadSubcommand() {
-        return Commands.literal("reload")
-                .requires(source -> source.hasPermission(reloadPermission.getName()))
-                .description("重载核心配置")
-                .executes(context -> {
-                    context.getSource().getServer().getPluginManager().getPlugin("fwindemicore")
-                            .ifPresent(plugin -> plugin.reloadConfig());
-                    context.getSource().sendMessage("核心配置已重载");
-                    return 1;
-                })
-                // Tab补全示例：假设支持"config"和"lang"参数
-                .then(Commands.argument("type", Commands.string())
-                        .suggests((context, builder) -> {
-                            String input = builder.getRemaining();
-                            SuggestionsBuilder suggestionsBuilder = new SuggestionsBuilder(input, builder);
-                            // 添加可选补全值
-                            if (input.isEmpty() || input.startsWith("c")) {
-                                suggestionsBuilder.suggest("config");
-                            }
-                            if (input.isEmpty() || input.startsWith("l")) {
-                                suggestionsBuilder.suggest("lang");
-                            }
-                            return suggestionsBuilder.buildFuture();
-                        })
-                        .executes(context -> {
-                            String type = context.getArgument("type", String.class);
-                            if ("config".equals(type)) {
-                                context.getSource().sendMessage("重载配置文件");
-                            } else if ("lang".equals(type)) {
-                                context.getSource().sendMessage("重载语言文件");
-                            }
-                            return 1;
-                        })
-                );
+    private void handleInfoCommand(CommandSender sender, String[] args) {
+        sender.sendMessage("§aFwindEmiCore 插件信息:");
+        sender.sendMessage("§l§eFwindEmi-Core §f版本: §a" + plugin.getDescription().getVersion());
+        sender.sendMessage("§7作者: 狐风轩汐");
+    }
+
+    private void handleReloadCommand(CommandSender sender, String[] args) {
+        // 权限检查
+        if (!sender.hasPermission("fwindemicore.reload")) {
+            sender.sendMessage("§c你没有权限执行此命令!");
+            return;
+        }
+
+        // 调用重载方法
+        plugin.reloadPlugin();
+        sender.sendMessage("§a[核心] 配置重载完成！");
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        List<String> completions = new ArrayList<>();
+        if (args.length == 1) {
+            String input = args[0].toLowerCase();
+            if ("info".startsWith(input)) completions.add("info");
+            if ("reload".startsWith(input)) completions.add("reload");
+        }
+        return completions;
     }
 }
