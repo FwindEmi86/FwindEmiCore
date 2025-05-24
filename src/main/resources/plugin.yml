@@ -1,15 +1,11 @@
 name: FwindEmiCore
-version: '0.0.2-SNAPSHOT'
+version: '0.0.8-SNAPSHOT'
 main: org.MiragEdge.fwindEmiCore.FwindEmiCore
 api-version: '1.21'
-prefix: FwindEmi
+prefix: FEC
 authors: [ FwindEmi ]
 description: FwindEmi-Core
 website: miragedge.top
 softdepend:
   - ItemsAdder
   - PlaceholderAPI
-commands:
-  monitor:
-    usage: /fwc
-    description: FwindEmi核心功能插件
