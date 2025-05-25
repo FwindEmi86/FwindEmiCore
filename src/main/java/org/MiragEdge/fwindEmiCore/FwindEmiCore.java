@@ -18,14 +18,14 @@ public class FwindEmiCore extends JavaPlugin {
         getCommand("fwindemicore").setTabCompleter(mainCommand);
         // 首次初始化
         initializePlugin();
-        getLogger().info("\\u001B[32m[核心] 插件已启用！\\u001B[0m");
+        getLogger().info("[核心] 插件已启用！");
     }
 
     @Override
     public void onDisable() {
         // 关闭插件
         shutdownPlugin();
-        getLogger().info("\\u001B[32m[核心] 插件已关闭！\\u001B[0m");
+        getLogger().info("[核心] 插件已关闭！");
     }
 
     // 首次初始化
@@ -49,6 +49,6 @@ public class FwindEmiCore extends JavaPlugin {
     public void reloadPlugin() {
         shutdownPlugin(); // 清理旧模块
         initializePlugin(); // 重新初始化
-        getLogger().info("\\u001B[32m[核心] 配置重载完成！\\u001B[0m");
+        getLogger().info("[核心] 配置重载完成！");
     }
 }
